@@ -1,0 +1,4 @@
+simulation:
+  height: 10
+  width: 10
+  spreadProbability: 0.9
