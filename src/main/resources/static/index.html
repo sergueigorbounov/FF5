@@ -1,3 +1,4 @@
+<!--
 
 <!DOCTYPE html>
 <html lang="en">
@@ -61,6 +62,110 @@
     }
 
     // Add event listener to the start button to begin the simulation
+    document.getElementById('start-btn').addEventListener('click', function() {
+        fetch('/simulation/start', { method: 'POST' })
+            .then(response => response.json())
+            .then(gridState => {
+                updateGridDisplay(gridState);
+            })
+            .catch(error => console.error('Error starting simulation:', error));
+    });
+    document.getElementById('step-btn').addEventListener('click', function() {
+        fetch('/simulation/step', { method: 'GET' })
+            .then(response => response.json())
+            .then(gridState => {
+                updateGridDisplay(gridState);
+            })
+            .catch(error => console.error('Error during simulation step:', error));
+    });
+</script>
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forest Fire Simulation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: black;
+            color: grey;
+            text-align: center;
+            margin: 50px 0;
+        }
+        h1 {
+            color: grey;
+        }
+        #grid {
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .cell {
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+            /*border: 1px solid #333; !* Set border color to a darker shade *!*/
+            border-radius: 20px;
+            font-size: 20px;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 30px;
+            /*box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);*/
+        }
+        /*.burned { background-color: #555; } !* A lighter shade of grey for burned cells *!*/
+        .burned { background: radial-gradient(#111, transparent);}
+        button {
+            background-color: #333;
+            border: none;
+            color: grey;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+<h1>Forest Fire Simulation</h1>
+<div>
+    <button id="start-btn">Start Simulation</button>
+    <button id="step-btn">Step Simulation</button>
+</div>
+<div id="grid"></div>
+
+<script>
+    // Function to update the grid display based on the simulation state
+    function updateGridDisplay(gridState) {
+        const gridElement = document.getElementById('grid');
+        gridElement.innerHTML = ''; // Clear previous grid
+
+        // Iterate through each row and cell to set the appropriate class and emoji
+        gridState.forEach((row, rowIndex) => {
+            const rowElement = document.createElement('div');
+            row.forEach((cell, colIndex) => {
+                const cellElement = document.createElement('div');
+                cellElement.className = 'cell';
+                if (cell.tree) {
+                    cellElement.innerHTML = '🌳'; // Tree emoji
+                } else if (cell.burning) {
+                    cellElement.innerHTML = '🔥'; // Fire emoji
+                } else if (cell.burned) {
+                    // For burned cells - black background
+                    cellElement.classList.add('burned');
+                }
+                rowElement.appendChild(cellElement);
+            });
+            gridElement.appendChild(rowElement);
+        });
+    }
+
+    // Add event listeners to the start and step buttons to begin the simulation
     document.getElementById('start-btn').addEventListener('click', function() {
         fetch('/simulation/start', { method: 'POST' })
             .then(response => response.json())
