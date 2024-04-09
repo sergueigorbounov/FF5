@@ -34,7 +34,7 @@ public class SimulationService {
         // Ignite a few cells at random positions as the starting point of the fire
         for (int i = 0; i < grid.getHeight(); i++) {
             for (int j = 0; j < grid.getWidth(); j++) {
-                if (Math.random() < 0.1) { // Let's say 10% chance to start burning
+                if (Math.random() < 0.01) { // Let's say 10% chance to start burning
                     grid.getCell(i, j).setBurning(true);
                 }
             }
@@ -67,7 +67,7 @@ public class SimulationService {
         grid.setCells(newCells);
     }
 
-    private void spreadFireToAdjacentCells(int x, int y, Cell[][] newCells) {
+/*    private void spreadFireToAdjacentCells(int x, int y, Cell[][] newCells) {
         int[] dx = {-1, 1, 0, 0};
         int[] dy = {0, 0, -1, 1};
 
@@ -76,7 +76,24 @@ public class SimulationService {
             int newY = y + dy[i];
             // Add fire spreading logic similar to what's already provided
         }
+    }*/
+private void spreadFireToAdjacentCells(int x, int y, Cell[][] newCells) {
+    int[] dx = {-1, 1, 0, 0};
+    int[] dy = {0, 0, -1, 1};
+
+    for (int i = 0; i < 4; i++) {
+        int newX = x + dx[i];
+        int newY = y + dy[i];
+
+        // Check bounds and only spread fire if the adjacent cell has a tree that is not already burning
+        if (newX >= 0 && newX < grid.getHeight() && newY >= 0 && newY < grid.getWidth()) {
+            Cell adjacentCell = newCells[newX][newY];
+            if (adjacentCell.isTree() && !adjacentCell.isBurning() && Math.random() < grid.getSpreadProbability()) {
+                adjacentCell.setBurning(true);
+            }
+        }
     }
+}
 
     public Cell[][] getGridState() {
         return grid.getCells();

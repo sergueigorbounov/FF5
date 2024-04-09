@@ -87,4 +87,7 @@ public class Grid {
         }
         return clone;
     }
+
+    public double getSpreadProbability() {
+    return spreadProbability;}
 }

@@ -1,3 +1,5 @@
+<!--
+&lt;!&ndash;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +28,7 @@
 </head>
 <body>
 <h1>Forest Fire Simulation</h1>
-<button id="start-btn">Start Simulation</button>
+<div><button id="start-btn">Simulation</button></div>
 <div id="grid"></div>
 
 <script>
@@ -84,6 +86,166 @@
         }
 
     }
+</script>
+</body>
+</html>
+&ndash;&gt;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forest Fire Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #grid {
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .cell {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            border: 1px solid black;
+        }
+        .tree { background-color: green; }
+        .burning { background-color: red; }
+        .burned { background-color: grey; }
+    </style>
+</head>
+<body>
+<h1>Forest Fire Simulation</h1>
+<div><button id="start-btn">Start Simulation</button>
+    <button id="step-btn">Step Simulation</button></div>
+<div id="grid"></div>
+
+<script>
+    // Function to update the grid display based on the simulation state
+    function updateGridDisplay(gridState) {
+        const gridElement = document.getElementById('grid');
+        gridElement.innerHTML = ''; // Clear previous grid
+
+        // Iterate through each row and cell to set the appropriate class
+        gridState.forEach((row, rowIndex) => {
+            const rowElement = document.createElement('div');
+            row.forEach((cell, colIndex) => {
+                const cellElement = document.createElement('div');
+                cellElement.className = 'cell';
+                if (cell.tree) {
+                    cellElement.classList.add('tree');
+                } else if (cell.burning) {
+                    cellElement.classList.add('burning');
+                } else if (cell.burned) {
+                    cellElement.classList.add('burned');
+                }
+                rowElement.appendChild(cellElement);
+            });
+            gridElement.appendChild(rowElement);
+        });
+    }
+
+    // Add event listener to the start button to begin the simulation
+    document.getElementById('start-btn').addEventListener('click', function() {
+        fetch('/simulation/start', { method: 'POST' })
+            .then(response => response.json())
+            .then(gridState => {
+                updateGridDisplay(gridState);
+            })
+            .catch(error => console.error('Error starting simulation:', error));
+    });
+    document.getElementById('step-btn').addEventListener('click', function() {
+        fetch('/simulation/step', { method: 'GET' })
+            .then(response => response.json())
+            .then(gridState => {
+                updateGridDisplay(gridState);
+            })
+            .catch(error => console.error('Error starting simulation:', error));
+    });
+</script>
+</body>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forest Fire Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #grid {
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .cell {
+            width: 30px; /* Increased size for visibility of emojis */
+            height: 30px; /* Increased size for visibility of emojis */
+            display: inline-block;
+            border: 1px solid black;
+            font-size: 20px; /* Adjust size as needed for emojis */
+            vertical-align: middle;
+            text-align: center;
+            line-height: 30px; /* Align emoji vertically */
+        }
+        /* Background colors removed for tree and burning states */
+        .burned { background-color: grey; }
+    </style>
+</head>
+<body>
+<h1>Forest Fire Simulation</h1>
+<div><button id="start-btn">Start Simulation</button>
+    <button id="step-btn">Step Simulation</button></div>
+<div id="grid"></div>
+
+<script>
+    // Function to update the grid display based on the simulation state
+    function updateGridDisplay(gridState) {
+        const gridElement = document.getElementById('grid');
+        gridElement.innerHTML = ''; // Clear previous grid
+
+        // Iterate through each row and cell to set the appropriate class and emoji
+        gridState.forEach((row, rowIndex) => {
+            const rowElement = document.createElement('div');
+            row.forEach((cell, colIndex) => {
+                const cellElement = document.createElement('div');
+                cellElement.className = 'cell';
+                if (cell.tree) {
+                    cellElement.innerHTML = '🌳'; // Tree emoji
+                } else if (cell.burning) {
+                    cellElement.innerHTML = '🔥'; // Fire emoji
+                } else if (cell.burned) {
+                    // For burned cells, keep the grey background
+                    cellElement.classList.add('burned');
+                }
+                rowElement.appendChild(cellElement);
+            });
+            gridElement.appendChild(rowElement);
+        });
+    }
+
+    // Add event listener to the start button to begin the simulation
+    document.getElementById('start-btn').addEventListener('click', function() {
+        fetch('/simulation/start', { method: 'POST' })
+            .then(response => response.json())
+            .then(gridState => {
+                updateGridDisplay(gridState);
+            })
+            .catch(error => console.error('Error starting simulation:', error));
+    });
+    document.getElementById('step-btn').addEventListener('click', function() {
+        fetch('/simulation/step', { method: 'GET' })
+            .then(response => response.json())
+            .then(gridState => {
+                updateGridDisplay(gridState);
+            })
+            .catch(error => console.error('Error during simulation step:', error));
+    });
 </script>
 </body>
 </html>
