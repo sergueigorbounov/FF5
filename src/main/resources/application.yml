@@ -1,4 +1,8 @@
 simulation:
   height: 10
   width: 10
-  spreadProbability: 0.1
+  spreadProbability: 0.5
+  positionX: 10
+  positionY: 10
+  positionX1: 20
+  positionY1: 20
